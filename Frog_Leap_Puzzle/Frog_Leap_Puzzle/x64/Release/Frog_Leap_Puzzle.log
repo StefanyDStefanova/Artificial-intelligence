@@ -1,0 +1,8 @@
+﻿  Frog_Leap_Puzzle.cpp
+C:\Users\sds_0\source\repos\Frog_Leap_Puzzle\Frog_Leap_Puzzle\Frog_Leap_Puzzle.cpp(29,11): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Generating code
+  62 of 479 functions (12.9%) were compiled, the rest were copied from previous compilation.
+    13 functions were new in current compilation
+    30 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  Frog_Leap_Puzzle.vcxproj -> C:\Users\sds_0\source\repos\Frog_Leap_Puzzle\x64\Release\Frog_Leap_Puzzle.exe
