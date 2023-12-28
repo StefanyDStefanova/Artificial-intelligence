@@ -1,7 +1,6 @@
 ﻿#include <iostream>
 #include <unordered_set>
 #include <stack>
-#include <queue>
 #include <set>
 #include <vector>
 #include <string>
@@ -15,6 +14,26 @@ struct State {
 
     State(const std::string& conf, const std::vector<std::string>& hist ) : configuration( conf ), history( hist ) {}
 };
+
+bool isDeadEnd(std::string& current, int size) 
+{
+    for (unsigned int i = 0; i < size - 3; ++i)
+    {
+        if (current[i] == '>' && current[i + 1] == '>' &&
+            current[i + 2] == '<' && current[i + 3] == '<') 
+        {
+            return true;
+        }
+        if ((current[i] == '>' && current[i + 1] == '<' &&
+            current[i + 2] == '<' && current[i + 3] == '>') || (
+            current[i] == '<' && current[i + 1] == '>' &&
+            current[i + 2] == '>' && current[i + 3] == '<'))
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
 // Функция за генериране на всички възможни следващи състояния
 void generateNextStates( State currentState, std::vector<State>& nextStates ) {
@@ -46,12 +65,10 @@ void generateNextStates( State currentState, std::vector<State>& nextStates ) {
             std::swap(newConfig[i], newConfig[i - 2]);
         }
 
-        if (newConfig != currentConfig) {
-            State st;
-            st.configuration = newConfig;
+        if (!isDeadEnd(newConfig, n) && newConfig != currentConfig) {
             std::vector<std::string> newHist = currentState.history;
             newHist.push_back(newConfig);
-            st.history = newHist;
+            State st(newConfig, newHist);
             nextStates.push_back(st);
         }
     }
@@ -105,7 +122,7 @@ std::vector<std::string> solveFrogLeapPuzzle(int n, State* outInitState) {
 
     // DFS
     while (!q.empty()) {
-        State currentState = q.front();
+        State currentState = q.top();
         q.pop();
 
         if (currentState.configuration == finalConfiguration) {
