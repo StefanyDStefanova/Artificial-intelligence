@@ -13,7 +13,7 @@ struct State {
     std::vector<std::string> history;  // история на конфигурациите
 
     State() {}
-    State(const std::string& conf, const std::vector<std::string>& hist) : configuration(conf), history(hist) {}
+    State(const std::string& conf, const std::vector<std::string>& hist) : configuration(conf), history(hist){}
 };
 
 bool isDeadEnd(std::string& current, int size)
@@ -45,6 +45,7 @@ void generateNextStates(State currentState, std::vector<State>& nextStates) {
     for (int i = 0; i < n; ++i) {
 
         std::string newConfig = currentConfig;
+        std::string newMove;
 
         if (currentConfig[i] == '>' && i < n - 1 && currentConfig[i + 1] == '_') {
             // жабата гледа надясно и има свободно място отпред
@@ -94,8 +95,58 @@ std::string generateFinalConfiguration(int n)
     return finalConfig;
 }
 
+std::string generateMidConfiguration(int n) 
+{
+    std::string midConfig;
+    for (int i = 0; i < n; ++i) 
+    {
+        midConfig += '>';
+        midConfig += '<';
+    }
+    midConfig += "_";
+
+    midConfig += '\0';
+    return midConfig;
+}
+
+void makeMiddleMoves( State& currentState, int n ) 
+{
+    std::string newConfig = currentState.configuration;
+    for (int i = n*2; i >= 2; i-=2) {
+        std::swap(newConfig[i], newConfig[i - 2]);
+        currentState.history.push_back(newConfig);
+    }
+}
+
+int findIndexOfEmptyLily(const std::string& config) {
+    return config.find('_');
+}
+
+void speedThroughTheFinalState(State& currentState, int n, const std::vector<std::string>& importantHistory)
+{
+    std::vector<std::string> impHistory = importantHistory;
+    std::string lastConfig = impHistory.back();
+    impHistory.pop_back();
+    std::string prevLastConfig = impHistory.back();
+    std::string currentConfig = currentState.history.back();
+
+    while (!impHistory.empty()) 
+    {
+        size_t indexOfLastEmptyLily = findIndexOfEmptyLily(lastConfig);
+        size_t indexOfPrevLastEmptyLily = findIndexOfEmptyLily(prevLastConfig);
+
+        std::swap(currentConfig[ n*2 - indexOfLastEmptyLily], currentConfig[n*2 - indexOfPrevLastEmptyLily]);
+        currentState.history.push_back(currentConfig);
+        impHistory.pop_back();
+        lastConfig = prevLastConfig;
+        if (!impHistory.empty()) {
+            prevLastConfig = impHistory.back();
+        }
+    }
+}
+
 // Функция за решаване на задачата с BFS
-std::vector<std::string> solveFrogLeapPuzzle(int n, State* outInitState) {
+std::vector<std::string> solveFrogLeapPuzzle(int n) {
     std::string initialConfig;
 
     for (int i = 0; i < n; ++i) {
@@ -115,11 +166,12 @@ std::vector<std::string> solveFrogLeapPuzzle(int n, State* outInitState) {
     std::vector<std::string> result;
 
     // Начално състояние
-    State initState(initialConfig, {});
+    State initState(initialConfig, { initialConfig });
     q.push(initState);
     visited.insert(initialConfig);
 
     std::string finalConfiguration = generateFinalConfiguration(n);
+    std::string midConfiguration = generateMidConfiguration(n);
 
     // DFS
     while (!q.empty()) {
@@ -127,9 +179,19 @@ std::vector<std::string> solveFrogLeapPuzzle(int n, State* outInitState) {
         q.pop();
 
         if (currentState.configuration == finalConfiguration) {
-            // Намерили сме крайната конфигурация
             result = currentState.history;
             result.push_back(currentState.configuration);
+            break;
+        }
+
+        if (currentState.configuration == midConfiguration) {
+            // Намерили сме средната конфигурация
+            std::vector<std::string> importantHistory = currentState.history;
+            // местим всички жаби, които гледат надясно с две позииции напред, като почваме от най-дясно стоящата
+            makeMiddleMoves(currentState, n);
+            // взимаме направени движения и ги обхождаме наобратно
+            speedThroughTheFinalState(currentState, n, importantHistory);
+            result = currentState.history;
             break;
         }
 
@@ -258,43 +320,43 @@ int main() {
     int n;
     std::cout << "Enter the number of frogs: ";
     std::cin >> n;
-    State* initState = nullptr;
-    int realNumOfFrogs;
-   
-   
 
-    //State test;
-    //test.configuration = initialFrogs(n);
-    //std::string finalConfig = generateFinalConfiguration(n);
-    if (n >= 18)
-    {
-        realNumOfFrogs = n - 5;
-    }
-    else
-    {
-        realNumOfFrogs = n;
-    }
+    State test;
+    test.configuration = initialFrogs(n);
+    std::string finalConfig = generateFinalConfiguration(n);
+    //if (n >= 18)
+    //{
+    //    realNumOfFrogs = n - 5;
+    //}
+    //else
+    //{
+    //    realNumOfFrogs = n;
+    //}
     // timer
     using std::chrono::high_resolution_clock;
     using std::chrono::duration_cast;
     using std::chrono::duration;
     using std::chrono::seconds;
+    
     auto t1 = high_resolution_clock::now();
-
-    std::vector<std::string> result = solveFrogLeapPuzzle(realNumOfFrogs, initState);
-
-    //frogLeapDFS(test, finalConfig);
-
+    std::vector<std::string> result = solveFrogLeapPuzzle(n);
     auto t2 = high_resolution_clock::now();
-
-    delete initState;
-
-    std::cout << "Solution steps:" << std::endl;
-    printResult(result);
-
     std::cout << std::endl;
     std::cout << "Time: " << std::chrono::duration_cast<std::chrono::duration<float>>(t2 - t1).count() << "s" << std::endl;
 
 
+    t1 = high_resolution_clock::now();
+    frogLeapDFS(test, finalConfig);
+    t2 = high_resolution_clock::now();
+    std::cout << std::endl;
+    std::cout << "Time: " << std::chrono::duration_cast<std::chrono::duration<float>>(t2 - t1).count() << "s" << std::endl;
+
+
+
+    //frogLeapDFS(test, finalConfig);
+    //std::cout << "Solution steps:" << std::endl;
+    //printResult(result);
+
+   
     return 0;
 }

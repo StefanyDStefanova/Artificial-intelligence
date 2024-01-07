@@ -1,3 +1,6 @@
 ﻿  Frog_Leap_Puzzle.cpp
-C:\Users\sds_0\source\repos\Frog_Leap_Puzzle\Frog_Leap_Puzzle\Frog_Leap_Puzzle.cpp(30,11): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  Frog_Leap_Puzzle.vcxproj -> C:\Users\sds_0\source\repos\Frog_Leap_Puzzle\x64\Debug\Frog_Leap_Puzzle.exe
+C:\Users\sds_0\source\repos\Artificial-intelligence\Frog_Leap_Puzzle\Frog_Leap_Puzzle\Frog_Leap_Puzzle.cpp(21,32): warning C4018: '<': signed/unsigned mismatch
+C:\Users\sds_0\source\repos\Artificial-intelligence\Frog_Leap_Puzzle\Frog_Leap_Puzzle\Frog_Leap_Puzzle.cpp(43,11): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\sds_0\source\repos\Artificial-intelligence\Frog_Leap_Puzzle\Frog_Leap_Puzzle\Frog_Leap_Puzzle.cpp(122,23): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\sds_0\source\repos\Artificial-intelligence\Frog_Leap_Puzzle\Frog_Leap_Puzzle\Frog_Leap_Puzzle.cpp(229,11): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Frog_Leap_Puzzle.vcxproj -> C:\Users\sds_0\source\repos\Artificial-intelligence\Frog_Leap_Puzzle\x64\Debug\Frog_Leap_Puzzle.exe
